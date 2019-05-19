@@ -1,0 +1,26 @@
+
+service: rekognition-cat-o-no-cat 
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:ListBucket
+        - s3:GetObject
+        - s3:DeleteObject
+      Resource: arn:aws:s3:::rekognition-cat-o-no-cat/*
+    - Effect: Allow
+      Action: 
+        - rekognition:DetectLabels
+      Resource: "*"
+
+functions:
+  validateImage:
+    handler: handler.validateImage
+    events:
+      - s3:
+          bucket: rekognition-cat-o-no-cat 
+          event: s3:ObjectCreated:*
